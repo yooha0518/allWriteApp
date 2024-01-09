@@ -9,12 +9,12 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
-import java.util.Objects
 
 class LoginActivity : AppCompatActivity() {
 
@@ -24,8 +24,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     data class LoginRequestBody(
-        val username: Editable,
-        val password: Editable
+        @SerializedName("username") val username: String, //editable은 gson으로 직렬화할 수 없다.
+        @SerializedName("password") val password: String // Error: Attempted to serialize java.lang.Class: android.text.DynamicLayout$ChangeWatcher. Forgot to register a type adapter?
     )
 
     data class LoginResponse(
@@ -78,8 +78,8 @@ class LoginActivity : AppCompatActivity() {
         val apiService = retrofit.create(ApiService::class.java)
 
         // 사용자 이름과 비밀번호 설정
-        val username = et_id.text // 실제 사용자 이름으로 교체
-        val password = et_password.text  // 실제 비밀번호로 교체
+        val username = et_id.text.toString() // 실제 사용자 이름으로 교체
+        val password = et_password.text.toString()  // 실제 비밀번호로 교체
 
         // 로그인 요청을 위한 RequestBody 생성
         val requestBody = LoginRequestBody(username, password)
@@ -90,16 +90,16 @@ class LoginActivity : AppCompatActivity() {
             override fun onResponse(call: Call<LoginResponse>, response: retrofit2.Response<LoginResponse>) {
                 if (response.isSuccessful) {
                     // 서버로부터 응답이 성공적으로 도착한 경우
-                    Log.d("login_res", response.toString());
+                    Log.d("login_res", response.body().toString());
                     val loginResponse = response.body()
                     val accessToken = loginResponse?.token?.accessToken ?: ""
 
-                    Log.d("login_token",accessToken);
+                    Log.d("accessToken", accessToken);
 
                     // 토큰 정보를 SharedPreferences에 저장 (보안을 위해 안전한 저장소에 저장하는 것이 좋습니다.)
                     val sharedPreferences = getSharedPreferences("token", Context.MODE_PRIVATE)
                     val editor = sharedPreferences.edit()
-                    editor.putString("accessToken", accessToken)
+                    editor.putString("loginResponse", loginResponse.toString())
                     editor.apply()
 
                     // MainActivity로 이동
