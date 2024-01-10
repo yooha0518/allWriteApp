@@ -21,14 +21,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="ID"
-            android:text="user1@naver.com"/>
+            android:text="user@naver.com"/>
 
         <EditText
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="password"
-            android:text="user1"/>
+            android:text="user"/>
 
         <Button
             android:id="@+id/btn_login"
