@@ -23,8 +23,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     data class LoginRequestBody(
-        @SerializedName("email") val email: String,
-        @SerializedName("password") val password: String
+        @SerializedName("email") val email: String, //editable은 gson으로 직렬화할 수 없다.
+        @SerializedName("password") val password: String //editable은 gson으로 직렬화할 수 없다.
     )
 
     data class LoginResponse(
